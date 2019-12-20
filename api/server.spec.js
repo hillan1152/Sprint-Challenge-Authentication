@@ -40,5 +40,23 @@ describe("POST /Register", function() {
             expect(res.body.username).toBe("paul")
         })
     })
+})
 
+describe("POST /Login", function(){
+    describe("Grabs a user & logs in", function(){
+        it('Should Return Status 200 OK', async () => {
+            const res = await request(server)
+                .post('/api/auth/login')
+                .send({ username: "paul", password: "blart" })
+            expect(res.status).toBe(200);
+        })
+        it('Should Return password', async () => {
+            const res = await request(server)
+                .post('/api/auth/login')
+                .send({ username: "paul", password: "blart" })
+            expect(res.type).toBe("application/json");
+        })
+
+
+    })
 })
