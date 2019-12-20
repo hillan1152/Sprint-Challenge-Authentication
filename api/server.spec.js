@@ -50,7 +50,7 @@ describe("POST /Login", function(){
                 .send({ username: "paul", password: "blart" })
             expect(res.status).toBe(200);
         })
-        it('Should Return password', async () => {
+        it('Should Return Application/json', async () => {
             const res = await request(server)
                 .post('/api/auth/login')
                 .send({ username: "paul", password: "blart" })
