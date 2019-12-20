@@ -56,6 +56,22 @@ describe("POST /Login", function(){
                 .send({ username: "paul", password: "blart" })
             expect(res.type).toBe("application/json");
         })
+        it('Should Be Authenticated and Sent To Jokes', async () => {
+            const res = await request(server)
+                .post('/api/auth/login')
+                .send({ username: "paul", password: "blart" })
+                .then(res => {
+                    const token = res.body.token;
+
+                    return request(server)
+                        .get('/api/jokes')
+                        .set("Authorization", token)
+                        .then(res => {
+                            expect(res.status).toBe(200);
+                            expect(Array.isArray(res.body)).toBe(true);                           
+                        })
+                })
+        })
 
 
     })
