@@ -22,6 +22,39 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => {
   // implement login
+  let { username, password } = req.body;
+
+  Users.findBy({ username })
+    .first()
+    .then(user => {
+      if(user && bcrypt.compareSync(password, user.password)){
+        const token = makeToken(user);
+
+        const userId = user.id;
+
+        res.status(200).json({ userId, token, message: 'logged in!' })
+      } else {
+        res.status(401).json({ message: 'Failed to log you in.' })
+      }
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
 });
+
+
+function makeToken(user){
+  const payload = {
+    username: user.username,
+    password: user.password,
+  }
+  const secret = process.env.JWT_SECRET || "This is a secret"
+
+  const options = {
+    expiresIn: "1h"
+  }
+  return jwt.sign(payload, secret, options);
+}
+
 
 module.exports = router;
