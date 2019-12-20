@@ -1,4 +1,5 @@
 const request = require('supertest');
+const db = require('../database/dbConfig');
 
 const server = require('./server.js');
 
@@ -9,14 +10,35 @@ describe("Server", function(){
                 .get("/")
                 .then(res => {
                     expect(res.status).toBe(200)
-                })
+            })
         })
         it("should run {api: 'up'}", function(){
             return request(server)
                 .get("/")
                 .then(res => {
                     expect(res.body.api).toBe("up")
-                })
+            })
         })
     })
+})
+
+describe("POST /Register", function() {
+    describe("Adds a User", function() {
+        beforeEach(async () => {
+            await db('users').truncate();
+        })
+        it('Should return 201 OK', async () => {
+            const res = await request(server)
+                .post('/api/auth/register')
+                .send({ username: "paul", password: "blart" })
+            expect(res.status).toBe(201)
+        })
+        it('Username works', async () => {
+            const res = await request(server)
+                .post('/api/auth/register')
+                .send({ username: "paul", password: "blart" })
+            expect(res.body.username).toBe("paul")
+        })
+    })
+
 })
